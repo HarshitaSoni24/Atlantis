@@ -2,7 +2,8 @@ import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { NavLink as RouterLink, NavLinkProps } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Badge, Box, ListItemButtonProps } from '@mui/material';
 import { Dashboard, LocationOn, Notifications, Assessment, Settings as SettingsIcon } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import { SIDEBAR_ACTIVE_BACKGROUND, SIDEBAR_HOVER_BACKGROUND } from '../constants/colors';
 
 const NavLinkComponent = React.forwardRef<HTMLAnchorElement, NavLinkProps>((props, ref) => (
   <RouterLink ref={ref} {...props} />
@@ -45,12 +46,14 @@ type StyledListItemProps = ListItemButtonProps & NavLinkProps;
 const StyledListItem = styled(ListItemButton)<StyledListItemProps>(({ theme }) => ({
   padding: theme.spacing(1.5, 3),
   '&.active': {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: SIDEBAR_ACTIVE_BACKGROUND,
     borderLeft: `4px solid ${theme.palette.primary.main}`,
     paddingLeft: `calc(${theme.spacing(3)} - 4px)`,
   },
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: SIDEBAR_HOVER_BACKGROUND,
+    transform: 'translateX(5px)',
+    transition: 'transform 0.3s ease-in-out',
   },
 }));
 
@@ -69,6 +72,7 @@ export interface SidebarRef {
 
 const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
   const [open, setOpen] = useState(false); // Internal state for sidebar open/close
+  const theme = useTheme();
 
   const toggleSidebar = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -82,8 +86,8 @@ const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
   return (
     <StyledDrawer variant="permanent" anchor="left" isCollapsed={!open}>
       <SidebarHeader>
-        <Avatar sx={{ mr: 2, bgcolor: '#778da9' }}>U</Avatar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Avatar sx={(theme) => ({ mr: 2, bgcolor: theme.palette.secondary.main })}>U</Avatar>
+        <Typography variant="h6" component="div" sx={(theme) => ({ flexGrow: 1, color: theme.palette.text.primary })}>
           User Name
         </Typography>
         <Badge badgeContent={4} color="error">
