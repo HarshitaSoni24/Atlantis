@@ -1,0 +1,119 @@
+Flood Risk Prediction Website (React)
+Design a professional, user-friendly website for a Flood Risk Prediction System using React. The website should provide real-time flood risk data, interactive map visualizations, alert notifications, and accessible reports. Use the provided reference images for styling, component layout, and dashboard structure.
+
+General Style and Layout
+Use a modern, clean aesthetic with minimal distractions, prioritizing clarity and accessibility.
+
+Employ a sidebar navigation on the left, which remains fixed and collapsible.
+
+Use crisp, readable fonts. Maintain high contrast between background and interactive elements.
+
+Main dashboard displays full-width, above-the-fold map with overlays and modals.
+
+Color Palette and Themes
+Base: White/light-gray backgrounds for main content areas.
+
+Sidebar: Dark blue/navy or deep gray tones.
+
+Interactive elements (alerts, risk zones): Clear color codes—green for "low", yellow for "moderate", red for "high" risk.
+
+Accent colors for links and buttons, matching reference image hues.
+
+Navigation (Sidebar)
+Sidebar menu, with icons and text, should include:
+
+Dashboard
+
+My Locations
+
+Alerts
+
+Reports
+
+Settings
+
+Display logged-in user avatar and notifications indicator at the top of the sidebar.
+
+Sidebar items highlight on hover, active item remains highlighted.
+
+Main Dashboard Page Features
+Search Bar at the top for location-based querying.
+
+Interactive Map Visualization:
+
+Display a color-coded risk overlay using gradient fills (green, yellow, red).
+
+Include map controls for zoom, pan, and selecting overlays (rainfall, river levels, flood zones).
+
+Legend for risk levels (Low, Moderate, High) prominently visible above the map.
+
+Real-time update indicator (e.g., "powered by local weather authority").
+
+Current Risk Panel:
+
+Right side, fixed panel, with current flood risk status (“High Risk: Mandatory Evacuation Order”).
+
+Contains next 7-day forecast with icons for rainfall, flood probability, and trend charts.
+
+A large red warning box for urgent alerts.
+
+“View Detailed Report” button below alert.
+
+Alerts & Notification System
+Alert panel displays recent, active alerts with timestamp and risk level.
+
+Alerts should be color-coded and can expand to show details.
+
+SMS/WhatsApp alert configuration in settings, with language preference selector.
+
+Locations and Reports Pages
+"My Locations": List of saved places with custom nicknames and quick risk indicators.
+
+"Reports": Table/list view of past flood events, downloadable visual maps and statistical summaries.
+
+Ability to filter/sort reports by region, date, risk level.
+
+Additional UI Components
+Settings Page:
+
+Language selection drop down.
+
+Notification preferences (type, frequency).
+
+Offline alert configuration.
+
+Responsive Design:
+
+Mobile view collapses sidebar and stacks panels vertically.
+
+Map Overlays:
+
+Enable toggling layers: rainfall heatmap, river level markers, population/infrastructure risk, risk zones.
+
+Dashboard Metrics:
+
+Small summary cards for rainfall levels, river status, flood warnings.
+
+Accessibility and Usability
+Large, legible text for risk information and alerts.
+
+Ensure all interactive elements (buttons, icons) have accessible labels.
+
+Provide high color contrast and sufficient touch/click targets for mobile and desktop users.
+
+Include screen reader support (aria-labels, descriptive tags).
+
+Example React Component Structure (suggested, LLM should create actual code):
+<SidebarNavigation />
+<DashboardHeader />
+<FloodRiskMap />
+<RiskLegend />
+<CurrentRiskPanel />
+<AlertsPanel />
+<LocationsList />
+<ReportsTable />
+<SettingsForm />
+Reference Images
+Follow the structure and color coding of the provided reference images (, ).
+
+Replicate the positions of sidebar, dashboard map overlay, legend, alert panels, and reports as shown.

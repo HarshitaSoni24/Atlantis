@@ -1,0 +1,147 @@
+Detailed UI Prompt for Flood Prediction Dashboard
+STAGE 1: Setup Main Container Structure
+Create a main dashboard container that fills the remaining space after the sidebar. Use these specifications:
+
+Background: Light gray (#f5f5f5 or similar)
+Full height minus any header
+Padding: 20px on all sides
+Use CSS Grid or Flexbox for layout
+
+STAGE 2: Create Top Header Section
+Build a header bar with:
+
+White background with subtle shadow
+Height: 60px
+Contains:
+
+Left side: Logo area with "FLOOD PREDICTION" text and cube icon
+Center: Search bar with placeholder "Search location" and magnifying glass icon
+Right side: User profile circle with notification badge (red circle with "1")
+
+
+Border radius: 8px
+Box shadow: 0 2px 4px rgba(0,0,0,0.1)
+
+STAGE 3: Create Main Content Grid Layout
+Set up a 2-column grid below the header:
+
+Left column: 65% width - Contains the map
+Right column: 35% width - Contains status cards and forecast
+Gap between columns: 20px
+Margin top: 20px from header
+
+STAGE 4: Build the Map Container (Left Column)
+Create the map section:
+
+Background: White
+Border radius: 12px
+Box shadow: 0 4px 6px rgba(0,0,0,0.1)
+Padding: 20px
+Contains:
+
+Top bar with "Real-time updates powered by [Local Weather Authority Logo]" in small gray text
+Legend bar with colored indicators:
+
+"Mouth" (dark green background, white text)
+"Low" (light green box)
+"Moderate" (yellow box)
+"Light" (light blue box)
+"High" (red box)
+
+
+Map area showing California coastline with colored overlay zones
+Color zones: Red/orange in center, yellow around it, green outer areas, blue for water
+
+
+
+STAGE 5: Build Right Column Status Card
+Create the flood risk status card:
+
+Background: White
+Border radius: 12px
+Box shadow: 0 4px 6px rgba(0,0,0,0.1)
+Padding: 20px
+Header: "Current Flood Risk" and "Riverside County, CA" in gray
+Large red alert box containing:
+
+White warning triangle icon
+"High Risk." in large white text
+"Mandatory Evacuation Order" in smaller white text
+Background: Red gradient (#dc2626 to #b91c1c)
+Border radius: 8px
+
+
+
+STAGE 6: Build Forecast Section (Below Status Card)
+Create forecast widget:
+
+Same styling as status card (white background, rounded corners, shadow)
+Margin top: 20px
+Contains:
+
+"Forecast" heading
+"7 day Outlook" subheading
+Weather icons section with:
+
+Droplet/rain icon on left
+Cloud with rain icon on right
+Text "Flood Probability" below icons
+
+
+Blue button "View Detailed Report" at bottom
+
+Background: #3b82f6
+White text
+Full width
+Border radius: 6px
+Padding: 12px
+
+
+
+
+
+STAGE 7: Style Details and Finishing
+Apply these final touches:
+
+All text fonts: Use system fonts like Inter, Segoe UI, or similar
+Card shadows: Subtle, use rgba(0,0,0,0.1) with 4px blur
+Hover effects: Add slight scale (1.02) or shadow increase on interactive elements
+Colors:
+
+Primary blue: #3b82f6
+Red alert: #dc2626
+Gray text: #6b7280
+Background gray: #f3f4f6
+
+
+Ensure responsive behavior for smaller screens
+
+STAGE 8: Interactive Elements
+Add these interactive features:
+
+Hover states for all buttons and cards
+Search bar focus states with blue outline
+Map zoom/pan functionality (placeholder for now)
+Clickable legend items
+Button press animations (slight scale down on click)
+
+STAGE 9: Icons and Graphics
+Include these visual elements:
+
+Cube logo icon for flood prediction brand
+Search magnifying glass icon
+Warning triangle icon (white)
+Weather/cloud icons for forecast
+Droplet/rain icons
+User profile placeholder circle
+
+STAGE 10: Final Layout Verification
+Ensure:
+
+All elements are properly aligned
+Consistent spacing (20px margins, 12px padding for smaller elements)
+Text hierarchy is clear (large headings, medium body text, small labels)
+Color contrast meets accessibility standards
+Layout works on different screen sizes
+No overlapping elements
+Smooth transitions and animations
