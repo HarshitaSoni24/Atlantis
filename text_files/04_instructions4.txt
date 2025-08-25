@@ -1,0 +1,91 @@
+**Stage 1: Core UI/UX Enhancements & Refactoring**
+
+1.  **Sidebar Toggle Logic Encapsulation:**
+    *   **Detail:** Move the `isSidebarCollapsed` state and `toggleSidebar` function from `App.tsx` into the `Sidebar.tsx` component itself. This makes the `Sidebar` component self-contained regarding its collapse state.
+    *   **Benefit:** Improves modularity and reusability of the `Sidebar` component.
+2.  **Responsive Sidebar Behavior:**
+    *   **Detail:** Replace the manual `window.innerWidth <= 768` check in `App.tsx` for the sidebar overlay with Material-UI's `useMediaQuery` hook. This provides a more declarative and consistent way to handle responsive breakpoints.
+    *   **Benefit:** Aligns with Material-UI's ecosystem, better handles responsive design, and is more robust than direct `window.innerWidth` checks.
+3.  **Centralize Reusable UI Components:**
+    *   **Detail:** Extract the `Search`, `SearchIconWrapper`, and `StyledInputBase` components from `DashboardHeader.tsx` into a new, dedicated file (e.g., `src/components/common/SearchBar.tsx`).
+    *   **Benefit:** Promotes reusability, reduces code duplication, and keeps `DashboardHeader.tsx` cleaner.
+4.  **Dynamic Dashboard Header Content:**
+    *   **Detail:** Make the "FLOOD PREDICTION" text and the cube icon in `DashboardHeader.tsx` configurable via props. This allows for easier branding changes.
+    *   **Detail:** Replace the hardcoded avatar `src="/static/images/avatar/1.jpg"` with a dynamic source, perhaps passed as a prop or fetched from a user context (to be implemented later).
+    *   **Benefit:** Increases flexibility and prepares for dynamic content.
+5.  **Map & Legend Data Abstraction:**
+    *   **Detail:** Modify `FloodRiskMap.tsx` and `RiskLegend.tsx` to accept `riskZones` data and styling configurations as props.
+    *   **Detail:** Create a `src/constants/colors.ts` file to define the risk level colors (e.g., `HIGH_RISK_COLOR: '#ff0000'`) and import them into `getRiskStyle` in `FloodRiskMap.tsx` and `RiskLegend.tsx`.
+    *   **Benefit:** Decouples presentation from data, making components more reusable and easier to update with real data. Improves maintainability of color schemes.
+
+**Stage 2: Data Integration & State Management**
+
+1.  **Introduce Centralized State Management:**
+    *   **Detail:** Implement a global state management solution. For this project, consider using React Context API with `useReducer` for simpler needs, or a library like Zustand for more complex state. This will manage states like user information, notification counts, and map data.
+    *   **Benefit:** Avoids prop drilling, centralizes data flow, and makes the application more scalable.
+2.  **Mock API Integration:**
+    *   **Detail:** Create mock API calls (e.g., using `fetch` with local JSON files or a simple mock server setup) to simulate fetching `riskZones` data for `FloodRiskMap.tsx` and current flood risk/forecast data for `Dashboard.tsx`.
+    *   **Benefit:** Allows for continued development of the UI and features without waiting for backend API development.
+3.  **Implement Loading & Error States:**
+    *   **Detail:** Add visual loading indicators (e.g., Material-UI `CircularProgress`) and user-friendly error messages for data fetching operations in `Dashboard.tsx` and `FloodRiskMap.tsx`.
+    *   **Benefit:** Improves user experience by providing feedback during data loading and handling potential errors gracefully.
+
+**Stage 3: Feature Development & Routing Refinement**
+
+1.  **Develop "My Locations" Page:**
+    *   **Detail:** Implement the UI and logic for users to add, view, edit, and delete their saved locations. This will involve interacting with the global state for storing locations.
+    *   **Benefit:** Adds core functionality for personalized user experience.
+2.  **Develop "Alerts" Page:**
+    *   **Detail:** Implement the UI to display a list of alerts, potentially categorized or filterable. Integrate with the global state to fetch and display these alerts.
+    *   **Benefit:** Provides users with critical information.
+3.  **Develop "Reports" Page:**
+    *   **Detail:** Implement the UI for users to generate or view historical flood reports.
+    *   **Benefit:** Offers analytical capabilities.
+4.  **Develop "Settings" Page:**
+    *   **Detail:** Implement basic user settings, such as profile updates or notification preferences.
+    *   **Benefit:** Enhances user control and personalization.
+5.  **Refine Routing:**
+    *   **Detail:** Ensure all navigation links in `Sidebar.tsx` correctly use `react-router-dom`'s `NavLink` and point to the appropriate routes. Verify active link styling.
+    *   **Benefit:** Ensures correct navigation and a smooth user experience.
+
+**Stage 4: Advanced Features & Performance Optimization**
+
+1.  **Real API Integration:**
+    *   **Detail:** Replace all mock API calls with actual backend API integrations for flood data, weather forecasts, user profiles, and location management.
+    *   **Benefit:** Transitions the application from a prototype to a functional system.
+2.  **User Authentication System:**
+    *   **Detail:** Implement a full user authentication system (login, signup, logout) using a suitable method (e.g., JWT, OAuth). Protect routes that require authentication.
+    *   **Benefit:** Secures user data and enables personalized features.
+3.  **Performance Optimizations:**
+    *   **Detail:** Implement code splitting for routes and large components using `React.lazy` and `Suspense` to reduce initial bundle size and improve load times.
+    *   **Detail:** Apply memoization techniques (`React.memo`, `useMemo`, `useCallback`) to prevent unnecessary re-renders of components, especially for complex UI elements like the map.
+    *   **Detail:** Optimize image assets (e.g., `logo.svg`, avatar images) for web performance.
+    *   **Benefit:** Improves application speed and responsiveness.
+4.  **Advanced Map Features:**
+    *   **Detail:** Implement interactive map features such as zooming to user-defined locations, adding custom markers, and displaying real-time data overlays fetched from APIs.
+    *   **Benefit:** Enhances the core functionality and user interaction with the map.
+5.  **Robust Notifications System:**
+    *   **Detail:** Implement a more comprehensive notification system, including toast notifications for transient messages and in-app alerts for critical updates.
+    *   **Benefit:** Provides timely and effective communication to the user.
+
+**Stage 5: Polish & Deployment Readiness**
+
+1.  **Comprehensive Error Handling:**
+    *   **Detail:** Implement global error boundaries to catch and gracefully handle errors across the application. Improve user-facing error messages for clarity.
+    *   **Benefit:** Increases application stability and user satisfaction.
+2.  **Accessibility Audit:**
+    *   **Detail:** Conduct a thorough accessibility audit (e.g., using Lighthouse or manual checks) and address any identified issues to ensure the application is usable by individuals with disabilities.
+    *   **Benefit:** Broadens user base and improves overall usability.
+3.  **Finalize Theming & Responsiveness:**
+    *   **Detail:** Review and finalize the Material-UI theme, ensuring consistent styling across all components. Verify full responsiveness across various devices and screen sizes (desktop, tablet, mobile).
+    *   **Benefit:** Provides a polished and consistent user experience.
+4.  **Comprehensive Testing:**
+    *   **Detail:** Write extensive unit tests for individual components, integration tests for component interactions, and end-to-end tests for critical user flows.
+    *   **Benefit:** Ensures code quality, prevents regressions, and facilitates future development.
+5.  **Deployment Configuration:**
+    *   **Detail:** Configure environment variables for different deployment environments (development, staging, production).
+    *   **Detail:** If applicable, set up a Continuous Integration/Continuous Deployment (CI/CD) pipeline for automated testing and deployment.
+    *   **Benefit:** Streamlines the deployment process and ensures consistent builds.
+6.  **Documentation:**
+    *   **Detail:** Update the `README.md` with detailed setup instructions, available scripts, and deployment guidelines. Add inline code comments for complex logic or non-obvious implementations.
+    *   **Benefit:** Improves project maintainability and onboarding for new developers.

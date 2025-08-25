@@ -15,12 +15,22 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 
 const drawerWidth = 280;
 
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
+const StyledDrawer = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== 'isCollapsed',
+})<{ isCollapsed: boolean }>(({ theme, isCollapsed }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
   '& .MuiDrawer-paper': {
     width: drawerWidth,
     boxSizing: 'border-box',
-    backgroundColor: '#0d1b2a', // Dark Navy Blue
+    backgroundColor: '#1e293b', // Dark blue-gray
     color: '#e0e1dd',
+    transition: theme.transitions.create('transform', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    transform: isCollapsed ? 'translateX(-280px)' : 'translateX(0)',
+    overflowX: 'hidden',
   },
 }));
 
@@ -53,9 +63,13 @@ const navItems = [
   { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
   return (
-    <StyledDrawer variant="permanent" anchor="left">
+    <StyledDrawer variant="permanent" anchor="left" isCollapsed={isCollapsed}>
       <SidebarHeader>
         <Avatar sx={{ mr: 2, bgcolor: '#778da9' }}>U</Avatar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

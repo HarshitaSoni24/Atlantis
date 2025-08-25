@@ -1,9 +1,11 @@
 
 import React from 'react';
-import { AppBar, Toolbar, InputBase, Box } from '@mui/material';
+import { AppBar, Toolbar, InputBase, Box, Typography, IconButton, Badge, Avatar } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications'; // For notification badge
 import { styled, alpha } from '@mui/material/styles';
 
+// Existing Search, SearchIconWrapper, StyledInputBase remain the same
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -44,21 +46,58 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const DashboardHeader: React.FC = () => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="transparent" elevation={0}>
-        <Toolbar>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search for a location…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: 'white',
+        height: '60px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        margin: '20px', // Add margin to separate from the top and sidebar
+        width: 'calc(100% - 40px)', // Adjust width for margin
+        display: 'flex', // Ensure flex container for toolbar
+        justifyContent: 'center', // Center content vertically
+      }}
+    >
+      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+        {/* Left side: Logo area */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Placeholder for cube icon */}
+          <Box
+            sx={{
+              width: 24,
+              height: 24,
+              backgroundColor: '#3b82f6', // Example color for cube
+              borderRadius: '4px',
+            }}
+          />
+          <Typography variant="h6" component="div" sx={{ color: '#333' }}>
+            FLOOD PREDICTION
+          </Typography>
+        </Box>
+
+        {/* Center: Search bar */}
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search location" // Updated placeholder
+            inputProps={{ 'aria-label': 'search' }}
+          />
+        </Search>
+
+        {/* Right side: User profile circle with notification badge */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton color="inherit">
+            <Badge badgeContent={1} color="error">
+              <NotificationsIcon sx={{ color: '#6b7280' }} />
+            </Badge>
+          </IconButton>
+          <Avatar alt="User Profile" src="/static/images/avatar/1.jpg" /> {/* Placeholder avatar */}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
