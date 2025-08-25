@@ -1,5 +1,4 @@
-
-import * as React from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { NavLink as RouterLink, NavLinkProps } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Badge, Box, ListItemButtonProps } from '@mui/material';
 import { Dashboard, LocationOn, Notifications, Assessment, Settings as SettingsIcon } from '@mui/icons-material';
@@ -63,13 +62,23 @@ const navItems = [
   { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
-interface SidebarProps {
-  isCollapsed: boolean;
+export interface SidebarRef {
+  toggleSidebar: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
+const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
+  const [open, setOpen] = useState(false); // Internal state for sidebar open/close
+
+  const toggleSidebar = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  useImperativeHandle(ref, () => ({
+    toggleSidebar,
+  }));
+
   return (
-    <StyledDrawer variant="permanent" anchor="left" isCollapsed={isCollapsed}>
+    <StyledDrawer variant="permanent" anchor="left" isCollapsed={!open}>
       <SidebarHeader>
         <Avatar sx={{ mr: 2, bgcolor: '#778da9' }}>U</Avatar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -93,6 +102,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
       </Box>
     </StyledDrawer>
   );
-};
+});
 
 export default Sidebar;
