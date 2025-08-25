@@ -87,6 +87,40 @@ export const clearAllAlerts = async (): Promise<{ success: boolean }> => {
   return { success: true };
 };
 
+// Function to generate a new random alert
+const generateNewAlert = (): Alert => {
+  const types: Alert['type'][] = ['warning', 'info', 'success'];
+  const messages = [
+    'New flood advisory for downtown area.',
+    'Heavy rainfall expected in the next 24 hours.',
+    'Emergency services deployed to affected regions.',
+    'Road closure due to flooding: Main Street.',
+    'Water levels receding in Western District.',
+    'All clear for Sector B. Return to normal operations.',
+  ];
+  const randomType = types[Math.floor(Math.random() * types.length)];
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+  return {
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+    type: randomType,
+    message: randomMessage,
+    timestamp: new Date().toISOString(),
+    read: false,
+  };
+};
+
+// Simulate real-time alerts via a subscription model
+export const subscribeToAlerts = (callback: (alert: Alert) => void) => {
+  const intervalId = setInterval(() => {
+    const newAlert = generateNewAlert();
+    mockAlerts.unshift(newAlert); // Add new alert to the beginning
+    callback(newAlert);
+  }, 5000); // Generate a new alert every 5 seconds
+
+  return () => clearInterval(intervalId); // Return a cleanup function
+};
+
 // Mock reports data
 const mockReportsData:ReportData[] = [
   { date: '2025-01-15', riskLevel: 'Moderate', precipitation: 50 },

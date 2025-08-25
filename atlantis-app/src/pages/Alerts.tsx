@@ -10,39 +10,41 @@ import {
   Sort as SortIcon, FilterList as FilterListIcon
 } from '@mui/icons-material';
 import { useAppContext } from '../context/AppContext';
-import { fetchAlerts, markAlertAsRead, clearAllAlerts } from '../api/mockApi'; // Assuming mockApi has these functions
+import { subscribeToAlerts } from '../api/mockApi'; // Import subscribeToAlerts
 
-interface Alert {
-  id: string;
-  type: 'warning' | 'info' | 'success';
-  message: string;
-  timestamp: string;
-  read: boolean;
-}
+// No longer need to import Alert interface here, as it's in AppContext
+// interface Alert {
+//   id: string;
+//   type: 'warning' | 'info' | 'success';
+//   message: string;
+//   timestamp: string;
+//   read: boolean;
+// }
 
 const Alerts: React.FC = () => {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext(); // Destructure dispatch
   const theme = useTheme();
-  const [alerts, setAlerts] = useState<Alert[]>([]);
+  // Use alerts from global state
+  const { alerts } = state;
   const [filterType, setFilterType] = useState<'all' | 'warning' | 'info' | 'success'>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
 
+  // Subscribe to real-time alerts
   useEffect(() => {
-    const getAlerts = async () => {
-      const fetchedAlerts = await fetchAlerts();
-      setAlerts(fetchedAlerts);
-    };
-    getAlerts();
-  }, []);
+    const unsubscribe = subscribeToAlerts((newAlert) => {
+      dispatch({ type: 'ADD_ALERT', payload: newAlert });
+    });
 
-  const handleMarkAsRead = async (id: string) => {
-    await markAlertAsRead(id);
-    setAlerts(alerts.map(alert => alert.id === id ? { ...alert, read: true } : alert));
+    // Cleanup subscription on component unmount
+    return () => unsubscribe();
+  }, [dispatch]); // Depend on dispatch to avoid re-subscribing unnecessarily
+
+  const handleMarkAsRead = (id: string) => {
+    dispatch({ type: 'MARK_ALERT_AS_READ', payload: id });
   };
 
-  const handleClearAll = async () => {
-    await clearAllAlerts();
-    setAlerts([]);
+  const handleClearAll = () => {
+    dispatch({ type: 'CLEAR_ALL_ALERTS' });
   };
 
   const filteredAlerts = alerts.filter(alert => {
@@ -54,7 +56,7 @@ const Alerts: React.FC = () => {
     return sortBy === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
-  const getAlertIcon = (type: Alert['type']) => {
+  const getAlertIcon = (type: 'warning' | 'info' | 'success') => { // Use direct type
     switch (type) {
       case 'warning': return <WarningIcon color="warning" />;
       case 'info': return <InfoIcon color="info" />;

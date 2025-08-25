@@ -59,10 +59,11 @@ const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
   sidebarRef,
   handleDrawerToggle,
 }) => {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext(); // Destructure dispatch
   const { userProfile } = state;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search input
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -82,6 +83,37 @@ const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  // Mock geocoding function
+  const mockGeocode = async (address: string) => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (address.toLowerCase().includes('new york')) {
+      return { lat: 40.7128, lng: -74.0060, name: 'New York City' };
+    } else if (address.toLowerCase().includes('london')) {
+      return { lat: 51.5074, lng: -0.1278, name: 'London' };
+    }
+    return null;
+  };
+
+  const handleSearch = async () => {
+    if (searchTerm.trim()) {
+      const result = await mockGeocode(searchTerm);
+      if (result) {
+        dispatch({ type: 'SET_SEARCHED_LOCATION', payload: result });
+      } else {
+        dispatch({ type: 'SET_ERROR', payload: `Location "${searchTerm}" not found.` });
+        dispatch({ type: 'SET_SEARCHED_LOCATION', payload: null }); // Clear previous search
+      }
+      setSearchTerm(''); // Clear search input
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   const menuId = 'primary-search-account-menu';
@@ -189,6 +221,9 @@ const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ 'aria-label': 'search' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </Search>
         <Box sx={{ flexGrow: 1 }} />
@@ -200,8 +235,7 @@ const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
           </IconButton>
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
-            color="inherit"
+            aria-label="show 17 new notifications"            color="inherit"
           >
             <Badge badgeContent={17} color="error">
               <NotificationsIcon />

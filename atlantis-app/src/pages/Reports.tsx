@@ -5,7 +5,7 @@ import {
   ToggleButton, ToggleButtonGroup, useTheme
 } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Download as DownloadIcon, TableChart as TableChartIcon, BarChart as BarChartIcon } from '@mui/icons-material';
+import { Download as DownloadIcon, TableChart as TableChartIcon, BarChart as BarChartIcon, ShowChart as LineChartIcon } from '@mui/icons-material';
 import { useAppContext } from '../context/AppContext';
 import { fetchReportsData } from '../api/mockApi'; // Assuming mockApi has this function
 
@@ -21,7 +21,7 @@ const Reports: React.FC = () => {
   const [reportsData, setReportsData] = useState<ReportData[]>([]);
   const [filterMonth, setFilterMonth] = useState<string>('all');
   const [filterYear, setFilterYear] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
+  const [viewMode, setViewMode] = useState<'chart' | 'barChart' | 'table'>('chart');
 
   useEffect(() => {
     const getReportsData = async () => {
@@ -32,7 +32,34 @@ const Reports: React.FC = () => {
   }, []);
 
   const handleDownloadReport = (format: 'csv' | 'pdf') => {
-    alert(`Downloading report as ${format.toUpperCase()}... (Not implemented yet)`);
+    if (format === 'csv') {
+      exportToCsv(filteredData, 'flood_reports.csv');
+    } else {
+      alert(`Downloading report as ${format.toUpperCase()}... (Not implemented yet)`);
+    }
+  };
+
+  const exportToCsv = (data: ReportData[], filename: string) => {
+    if (data.length === 0) {
+      alert('No data to export.');
+      return;
+    }
+
+    const headers = Object.keys(data[0]).join(',');
+    const csvContent = data.map(row => Object.values(row).join(',')).join('\n');
+    const fullCsv = `${headers}\n${csvContent}`;
+
+    const blob = new Blob([fullCsv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) { // Feature detection for download attribute
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   const filteredData = reportsData.filter(report => {
@@ -92,8 +119,11 @@ const Reports: React.FC = () => {
             <ToggleButton value="table" aria-label="table view">
               <TableChartIcon />
             </ToggleButton>
-            <ToggleButton value="chart" aria-label="chart view">
+            <ToggleButton value="barChart" aria-label="bar chart view">
               <BarChartIcon />
+            </ToggleButton>
+            <ToggleButton value="lineChart" aria-label="line chart view">
+              <LineChartIcon /> {/* Assuming LineChartIcon is available or use a generic one */}
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
@@ -142,7 +172,7 @@ const Reports: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        ) : (
+        ) : viewMode === 'barChart' ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={filteredData}
@@ -159,8 +189,26 @@ const Reports: React.FC = () => {
               <Tooltip />
               <Legend />
               <Bar dataKey="precipitation" fill={theme.palette.primary.main} name="Precipitation" />
-              {/* You can add another Bar for risk level if you map it to a numerical value */}
             </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={filteredData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" tickFormatter={(dateStr) => new Date(dateStr).toLocaleDateString()} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="precipitation" stroke={theme.palette.primary.main} name="Precipitation" />
+            </LineChart>
           </ResponsiveContainer>
         )}
 

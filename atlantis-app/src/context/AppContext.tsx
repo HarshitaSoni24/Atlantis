@@ -1,9 +1,5 @@
 import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
 import { fetchRiskZones } from '../api/mockApi';
-
-import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
-import { fetchRiskZones } from '../api/mockApi';
-
 // Define the shape of your state
 interface Location {
   id: string;
@@ -17,6 +13,14 @@ interface SearchedLocation {
   name: string;
 }
 
+interface Alert { // Define Alert interface here as well for AppContext
+  id: string;
+  type: 'warning' | 'info' | 'success';
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
 interface UserProfile {
   avatarSrc: string;
   locations: Location[]; // New: Array of user-defined locations
@@ -28,6 +32,7 @@ interface AppState {
   userProfile: UserProfile; // Use the new UserProfile interface
   error: string | null; // New: for global error messages
   searchedLocation: SearchedLocation | null; // New: for map search
+  alerts: Alert[]; // New: for real-time alerts
 }
 
 // Define the types of actions that can be dispatched
@@ -39,7 +44,10 @@ type AppAction =
   | { type: 'ADD_LOCATION'; payload: Location } // New: Add location
   | { type: 'UPDATE_LOCATION'; payload: Location } // New: Update location
   | { type: 'DELETE_LOCATION'; payload: string } // New: Delete location
-  | { type: 'SET_SEARCHED_LOCATION'; payload: SearchedLocation | null }; // New: Set searched location
+  | { type: 'SET_SEARCHED_LOCATION'; payload: SearchedLocation | null } // New: Set searched location
+  | { type: 'ADD_ALERT'; payload: Alert } // New: Add a single alert
+  | { type: 'MARK_ALERT_AS_READ'; payload: string } // New: Mark alert as read
+  | { type: 'CLEAR_ALL_ALERTS'; }; // New: Clear all alerts
 
 const initialState: AppState = {
   riskZones: null, // Initialize as null, will be fetched
@@ -50,6 +58,7 @@ const initialState: AppState = {
   },
   error: null, // New: no error initially
   searchedLocation: null, // Initialize searchedLocation
+  alerts: [], // Initialize alerts as an empty array
 };
 
 // Reducer function
@@ -91,6 +100,26 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       };
     case 'SET_SEARCHED_LOCATION':
       return { ...state, searchedLocation: action.payload };
+    case 'ADD_ALERT':
+      return {
+        ...state,
+        alerts: [action.payload, ...state.alerts], // Add new alert to the beginning
+        notificationCount: state.notificationCount + 1, // Increment notification count
+      };
+    case 'MARK_ALERT_AS_READ':
+      return {
+        ...state,
+        alerts: state.alerts.map(alert =>
+          alert.id === action.payload ? { ...alert, read: true } : alert
+        ),
+        notificationCount: state.notificationCount > 0 ? state.notificationCount - 1 : 0, // Decrement if > 0
+      };
+    case 'CLEAR_ALL_ALERTS':
+      return {
+        ...state,
+        alerts: [],
+        notificationCount: 0,
+      };
     default:
       return state;
   }

@@ -1,12 +1,28 @@
 
-import React from 'react';
-import { MapContainer, TileLayer, GeoJSON, Popup, LayersControl } from 'react-leaflet'; // Import LayersControl
+import React, { useEffect } from 'react'; // Import useEffect
+import { MapContainer, TileLayer, GeoJSON, Popup, LayersControl, useMap } from 'react-leaflet'; // Import useMap
 import 'leaflet/dist/leaflet.css';
 import { Box, useTheme } from '@mui/material'; // Import useTheme
+import { useAppContext } from '../context/AppContext'; // Import useAppContext
 
 interface FloodRiskMapProps {
   riskZones: any; // Define a more specific type if available
 }
+
+// Component to control map view based on searchedLocation
+const MapController: React.FC = () => {
+  const map = useMap();
+  const { state } = useAppContext();
+  const { searchedLocation } = state;
+
+  useEffect(() => {
+    if (searchedLocation) {
+      map.flyTo([searchedLocation.lat, searchedLocation.lng], 13); // Fly to new location with zoom level 13
+    }
+  }, [searchedLocation, map]);
+
+  return null;
+};
 
 const FloodRiskMap: React.FC<FloodRiskMapProps> = ({ riskZones }) => {
   const theme = useTheme(); // Use the theme hook
@@ -36,6 +52,7 @@ const FloodRiskMap: React.FC<FloodRiskMapProps> = ({ riskZones }) => {
   return (
     <Box sx={{ height: '600px', width: '100%' }}>
       <MapContainer center={[40.7, -74.0]} zoom={10} style={{ height: '100%', width: '100%' }}>
+        <MapController /> {/* Add MapController inside MapContainer */}
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="OpenStreetMap">
             <TileLayer
