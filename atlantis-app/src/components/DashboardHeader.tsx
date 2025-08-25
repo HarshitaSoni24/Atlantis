@@ -44,7 +44,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const DashboardHeader: React.FC = () => {
+interface DashboardHeaderProps {
+  onMenuClick: () => void;
+  title: string;
+  showCubeIcon: boolean;
+  avatarSrc: string;
+}
+
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onMenuClick, title, showCubeIcon, avatarSrc }) => {
   return (
     <AppBar
       position="static"
@@ -63,16 +70,18 @@ const DashboardHeader: React.FC = () => {
         {/* Left side: Logo area */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Placeholder for cube icon */}
-          <Box
-            sx={{
-              width: 24,
-              height: 24,
-              backgroundColor: '#3b82f6', // Example color for cube
-              borderRadius: '4px',
-            }}
-          />
+          {showCubeIcon && (
+            <Box
+              sx={{
+                width: 24,
+                height: 24,
+                backgroundColor: '#3b82f6', // Example color for cube
+                borderRadius: '4px',
+              }}
+            />
+          )}
           <Typography variant="h6" component="div" sx={{ color: '#333' }}>
-            FLOOD PREDICTION
+            {title}
           </Typography>
         </Box>
 
@@ -94,7 +103,7 @@ const DashboardHeader: React.FC = () => {
               <NotificationsIcon sx={{ color: '#6b7280' }} />
             </Badge>
           </IconButton>
-          <Avatar alt="User Profile" src="/static/images/avatar/1.jpg" /> {/* Placeholder avatar */}
+          <Avatar alt="User Profile" src={avatarSrc} /> {/* Placeholder avatar */}
         </Box>
       </Toolbar>
     </AppBar>

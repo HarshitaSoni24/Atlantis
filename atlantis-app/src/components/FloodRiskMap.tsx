@@ -3,48 +3,22 @@ import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Box } from '@mui/material';
+import { HIGH_RISK_COLOR, MODERATE_RISK_COLOR, LOW_RISK_COLOR } from '../constants/colors';
 
-// Placeholder GeoJSON data for risk zones
-const riskZones = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "risk": "High" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-74.0, 40.7], [-73.9, 40.7], [-73.9, 40.8], [-74.0, 40.8], [-74.0, 40.7]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "risk": "Moderate" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-73.9, 40.6], [-73.8, 40.6], [-73.8, 40.7], [-73.9, 40.7], [-73.9, 40.6]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "risk": "Low" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-74.1, 40.5], [-74.0, 40.5], [-74.0, 40.6], [-74.1, 40.6], [-74.1, 40.5]]]
-      }
-    }
-  ]
-};
+interface FloodRiskMapProps {
+  riskZones: any; // Define a more specific type if available
+}
 
 const getRiskStyle = (feature: any) => {
   switch (feature.properties.risk) {
-    case 'High': return { color: '#ff0000', weight: 2, opacity: 0.7, fillOpacity: 0.5 };
-    case 'Moderate': return { color: '#ffff00', weight: 2, opacity: 0.7, fillOpacity: 0.5 };
-    case 'Low': return { color: '#00ff00', weight: 2, opacity: 0.7, fillOpacity: 0.5 };
+    case 'High': return { color: HIGH_RISK_COLOR, weight: 2, opacity: 0.7, fillOpacity: 0.5 };
+    case 'Moderate': return { color: MODERATE_RISK_COLOR, weight: 2, opacity: 0.7, fillOpacity: 0.5 };
+    case 'Low': return { color: LOW_RISK_COLOR, weight: 2, opacity: 0.7, fillOpacity: 0.5 };
     default: return { color: '#cccccc', weight: 2, opacity: 0.7, fillOpacity: 0.5 };
   }
 };
 
-const FloodRiskMap: React.FC = () => {
+const FloodRiskMap: React.FC<FloodRiskMapProps> = ({ riskZones }) => {
   return (
     <Box sx={{ height: '600px', width: '100%' }}>
       <MapContainer center={[40.7, -74.0]} zoom={10} style={{ height: '100%', width: '100%' }}>

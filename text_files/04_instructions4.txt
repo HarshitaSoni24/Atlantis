@@ -1,14 +1,4 @@
 **Stage 1: Core UI/UX Enhancements & Refactoring**
-
-1.  **Sidebar Toggle Logic Encapsulation:**
-    *   **Detail:** Move the `isSidebarCollapsed` state and `toggleSidebar` function from `App.tsx` into the `Sidebar.tsx` component itself. This makes the `Sidebar` component self-contained regarding its collapse state.
-    *   **Benefit:** Improves modularity and reusability of the `Sidebar` component.
-2.  **Responsive Sidebar Behavior:**
-    *   **Detail:** Replace the manual `window.innerWidth <= 768` check in `App.tsx` for the sidebar overlay with Material-UI's `useMediaQuery` hook. This provides a more declarative and consistent way to handle responsive breakpoints.
-    *   **Benefit:** Aligns with Material-UI's ecosystem, better handles responsive design, and is more robust than direct `window.innerWidth` checks.
-3.  **Centralize Reusable UI Components:**
-    *   **Detail:** Extract the `Search`, `SearchIconWrapper`, and `StyledInputBase` components from `DashboardHeader.tsx` into a new, dedicated file (e.g., `src/components/common/SearchBar.tsx`).
-    *   **Benefit:** Promotes reusability, reduces code duplication, and keeps `DashboardHeader.tsx` cleaner.
 4.  **Dynamic Dashboard Header Content:**
     *   **Detail:** Make the "FLOOD PREDICTION" text and the cube icon in `DashboardHeader.tsx` configurable via props. This allows for easier branding changes.
     *   **Detail:** Replace the hardcoded avatar `src="/static/images/avatar/1.jpg"` with a dynamic source, perhaps passed as a prop or fetched from a user context (to be implemented later).
