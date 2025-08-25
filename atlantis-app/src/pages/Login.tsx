@@ -40,7 +40,7 @@ const Login: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundImage: `url('/ChatGPT%20Image%20Aug%2026,%202025,%2001_33_22%20AM.png')`,
+        backgroundImage: `url('/LoginPage_PlaceHolder.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
