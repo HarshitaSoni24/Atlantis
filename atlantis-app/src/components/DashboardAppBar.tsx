@@ -20,6 +20,7 @@ import SearchIcon from '@mui/icons-material/Search'; // Assuming SearchIcon is u
 import { Search, SearchIconWrapper, StyledInputBase } from './common/SearchBar'; // Assuming SearchBar is in common
 
 import { SidebarRef } from './Sidebar'; // Assuming SidebarRef is in Sidebar
+import { useAppContext } from '../context/AppContext'; // New import
 
 const drawerWidth = 240;
 
@@ -48,18 +49,18 @@ const AppBar = styled(MuiAppBar, {
 interface DashboardAppBarProps {
   title: string;
   iconComponent: React.ElementType;
-  avatarSrc: string;
-  sidebarRef: React.RefObject<SidebarRef>;
+  sidebarRef: React.RefObject<SidebarRef | null>;
   handleDrawerToggle: () => void;
 }
 
 const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
   title,
   iconComponent: IconComponent,
-  avatarSrc,
   sidebarRef,
   handleDrawerToggle,
 }) => {
+  const { state } = useAppContext();
+  const { userProfile } = state;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -215,7 +216,7 @@ const DashboardAppBar: React.FC<DashboardAppBarProps> = ({
             onClick={handleProfileMenuOpen}
             color="inherit"
           >
-            <Avatar alt="Remy Sharp" src={avatarSrc} />
+            <Avatar alt="Remy Sharp" src={userProfile.avatarSrc} />
           </IconButton>
         </Box>
         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

@@ -64,6 +64,7 @@ const navItems = [
 
 export interface SidebarRef {
   toggleSidebar: () => void;
+  isOpen: boolean;
 }
 
 const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
@@ -75,6 +76,7 @@ const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
 
   useImperativeHandle(ref, () => ({
     toggleSidebar,
+    isOpen: open, // Expose the internal 'open' state
   }));
 
   return (
