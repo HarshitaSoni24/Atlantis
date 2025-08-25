@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Import Navigate
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -21,6 +21,8 @@ import Alerts from './pages/Alerts';
 import MyLocations from './pages/MyLocations';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import Login from './pages/Login'; // Import Login component
+import { useAppContext } from './context/AppContext'; // Import useAppContext
 
 import {
   PRIMARY_MAIN, SECONDARY_MAIN, BACKGROUND_DEFAULT, BACKGROUND_PAPER,
@@ -98,6 +100,9 @@ const darkTheme = createTheme({
 });
 
 function App() {
+  const { state } = useAppContext(); // Get isLoggedIn state
+  const { isLoggedIn } = state;
+
   const sidebarRef = useRef<SidebarRef>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -206,39 +211,47 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
-        <Box sx={{ display: 'flex' }}>
-          <DashboardAppBar
-            title="FLOOD PREDICTION"
-            iconComponent={AdbIcon}
-            sidebarRef={sidebarRef}
-            handleDrawerToggle={handleDrawerToggle}
-          />
-          <Sidebar ref={sidebarRef} />
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              transition: (theme) =>
-                theme.transitions.create('margin', {
-                  easing: theme.transitions.easing.sharp,
-                  duration: theme.transitions.duration.leavingScreen,
-                }),
-              ml: isMobile || !sidebarRef.current?.isOpen ? 0 : `${drawerWidth}px`,
-              width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
-            }}
-          >
-            <Toolbar />
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/alerts" element={<Alerts />} />
-              <Route path="/mylocations" element={<MyLocations />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
+        {!isLoggedIn ? (
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/login" />} /> {/* Redirect any other path to login */}
+          </Routes>
+        ) : (
+          <Box sx={{ display: 'flex' }}>
+            <DashboardAppBar
+              title="FLOOD PREDICTION"
+              iconComponent={AdbIcon}
+              sidebarRef={sidebarRef}
+              handleDrawerToggle={handleDrawerToggle}
+            />
+            <Sidebar ref={sidebarRef} />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                p: 3,
+                transition: (theme) =>
+                  theme.transitions.create('margin', {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.leavingScreen,
+                  }),
+                ml: isMobile || !sidebarRef.current?.isOpen ? 0 : `${drawerWidth}px`,
+                width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+              }}
+            >
+              <Toolbar />
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/alerts" element={<Alerts />} />
+                <Route path="/mylocations" element={<MyLocations />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<Navigate to="/" />} /> {/* Redirect any unknown path to dashboard if logged in */}
+              </Routes>
+            </Box>
           </Box>
-        </Box>
-        {isMobile && sidebarRef.current?.isOpen && (
+        )}
+        {isLoggedIn && isMobile && sidebarRef.current?.isOpen && (
           <Box
             sx={{
               position: 'fixed',
@@ -252,8 +265,8 @@ function App() {
             onClick={handleDrawerToggle}
           />
         )}
-        {renderMobileMenu}
-        {renderMenu}
+        {isLoggedIn && renderMobileMenu}
+        {isLoggedIn && renderMenu}
       </Router>
     </ThemeProvider>
   );

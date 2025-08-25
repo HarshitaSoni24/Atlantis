@@ -33,6 +33,7 @@ interface AppState {
   error: string | null; // New: for global error messages
   searchedLocation: SearchedLocation | null; // New: for map search
   alerts: Alert[]; // New: for real-time alerts
+  isLoggedIn: boolean; // New: Authentication status
 }
 
 // Define the types of actions that can be dispatched
@@ -47,7 +48,9 @@ type AppAction =
   | { type: 'SET_SEARCHED_LOCATION'; payload: SearchedLocation | null } // New: Set searched location
   | { type: 'ADD_ALERT'; payload: Alert } // New: Add a single alert
   | { type: 'MARK_ALERT_AS_READ'; payload: string } // New: Mark alert as read
-  | { type: 'CLEAR_ALL_ALERTS'; }; // New: Clear all alerts
+  | { type: 'CLEAR_ALL_ALERTS'; } // New: Clear all alerts
+  | { type: 'LOGIN_SUCCESS'; } // New: User successfully logged in
+  | { type: 'LOGOUT'; }; // New: User logged out
 
 const initialState: AppState = {
   riskZones: null, // Initialize as null, will be fetched
@@ -59,6 +62,7 @@ const initialState: AppState = {
   error: null, // New: no error initially
   searchedLocation: null, // Initialize searchedLocation
   alerts: [], // Initialize alerts as an empty array
+  isLoggedIn: false, // Initialize isLoggedIn to false
 };
 
 // Reducer function
@@ -73,53 +77,23 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'ADD_LOCATION':
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          locations: [...state.userProfile.locations, action.payload],
-        },
-      };
+      return { ...state, userProfile: { ...state.userProfile, locations: [...state.userProfile.locations, action.payload], }, };
     case 'UPDATE_LOCATION':
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          locations: state.userProfile.locations.map((loc) =>
-            loc.id === action.payload.id ? action.payload : loc
-          ),
-        },
-      };
+      return { ...state, userProfile: { ...state.userProfile, locations: state.userProfile.locations.map((loc) => loc.id === action.payload.id ? action.payload : loc ), }, };
     case 'DELETE_LOCATION':
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          locations: state.userProfile.locations.filter((loc) => loc.id !== action.payload),
-        },
-      };
+      return { ...state, userProfile: { ...state.userProfile, locations: state.userProfile.locations.filter((loc) => loc.id !== action.payload), }, };
     case 'SET_SEARCHED_LOCATION':
       return { ...state, searchedLocation: action.payload };
     case 'ADD_ALERT':
-      return {
-        ...state,
-        alerts: [action.payload, ...state.alerts], // Add new alert to the beginning
-        notificationCount: state.notificationCount + 1, // Increment notification count
-      };
+      return { ...state, alerts: [action.payload, ...state.alerts], notificationCount: state.notificationCount + 1, };
     case 'MARK_ALERT_AS_READ':
-      return {
-        ...state,
-        alerts: state.alerts.map(alert =>
-          alert.id === action.payload ? { ...alert, read: true } : alert
-        ),
-        notificationCount: state.notificationCount > 0 ? state.notificationCount - 1 : 0, // Decrement if > 0
-      };
+      return { ...state, alerts: state.alerts.map(alert => alert.id === action.payload ? { ...alert, read: true } : alert ), notificationCount: state.notificationCount > 0 ? state.notificationCount - 1 : 0, };
     case 'CLEAR_ALL_ALERTS':
-      return {
-        ...state,
-        alerts: [],
-        notificationCount: 0,
-      };
+      return { ...state, alerts: [], notificationCount: 0, };
+    case 'LOGIN_SUCCESS':
+      return { ...state, isLoggedIn: true, error: null };
+    case 'LOGOUT':
+      return { ...state, isLoggedIn: false, userProfile: { ...state.userProfile, avatarSrc: "/static/images/avatar/1.jpg", locations: [] } }; // Clear user-specific data on logout
     default:
       return state;
   }

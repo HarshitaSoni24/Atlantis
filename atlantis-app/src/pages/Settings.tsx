@@ -4,9 +4,11 @@ import {
   Typography, Box, TextField, Button, Snackbar, Alert, Avatar
 } from '@mui/material';
 import { useAppContext } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Settings: React.FC = () => {
   const { state, dispatch } = useAppContext();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [avatarSrc, setAvatarSrc] = useState(state.userProfile.avatarSrc || '');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -36,6 +38,11 @@ const Settings: React.FC = () => {
     setOpenSnackbar(true);
     setAvatarSrcError(false); // Clear error on successful save
     setAvatarSrcHelperText('');
+  };
+
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/login'); // Redirect to login page
   };
 
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -73,6 +80,13 @@ const Settings: React.FC = () => {
         )}
         <Button variant="contained" onClick={handleSave}>
           Save Settings
+        </Button>
+      </Box>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>Account Actions</Typography>
+        <Button variant="outlined" color="error" onClick={handleLogout}>
+          Logout
         </Button>
       </Box>
 
