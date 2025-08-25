@@ -6,9 +6,15 @@ import { Typography, Box, Button, CircularProgress } from '@mui/material';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import { MOUTH_RISK_COLOR, LOW_RISK_COLOR, MODERATE_RISK_COLOR, LIGHT_RISK_COLOR, HIGH_RISK_COLOR } from '../constants/colors';
 import { useAppContext } from '../context/AppContext';
 import { fetchFloodRiskData } from '../api/mockApi';
+import InfoIcon from '@mui/icons-material/Info'; // Import InfoIcon
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Import CheckCircleIcon
+import { alpha } from '@mui/material/styles'; // Import alpha for color manipulation
 
 const Dashboard: React.FC = () => {
   const { state } = useAppContext();
@@ -39,6 +45,38 @@ const Dashboard: React.FC = () => {
     { label: 'Light', color: LIGHT_RISK_COLOR },
     { label: 'High', color: HIGH_RISK_COLOR },
   ];
+
+  const getRiskBoxStyle = (riskLevel: string) => {
+    let bgColor;
+    let icon;
+    switch (riskLevel) {
+      case 'High Risk.':
+        bgColor = HIGH_RISK_COLOR;
+        icon = <WarningAmberIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+        break;
+      case 'Moderate Risk.':
+        bgColor = MODERATE_RISK_COLOR;
+        icon = <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />; // Example: InfoIcon for moderate
+        break;
+      case 'Low Risk.':
+        bgColor = LOW_RISK_COLOR;
+        icon = <CheckCircleIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />; // Example: CheckCircleIcon for low
+        break;
+      default:
+        bgColor = '#6b7280'; // Default neutral color
+        icon = <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+    }
+    return {
+      background: `linear-gradient(to right, ${bgColor}, ${alpha(bgColor, 0.8)})`,
+      borderRadius: '8px',
+      padding: '20px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      color: 'white',
+    };
+  };
 
   return (
     <div className="dashboard-container">
@@ -108,20 +146,16 @@ const Dashboard: React.FC = () => {
                 </Typography>
 
                 {/* Red Alert Box */}
-                <Box
-                  sx={{
-                    background: 'linear-gradient(to right, #dc2626, #b91c1c)',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    color: 'white',
-                  }}
-                >
-                  {/* Warning Triangle Icon */}
-                  <WarningAmberIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />
+                <Box sx={getRiskBoxStyle(currentRisk?.level)}>
+                  {/* Call a function to get the icon based on risk level */}
+                  {(() => {
+                    switch (currentRisk?.level) {
+                      case 'High Risk.': return <WarningAmberIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+                      case 'Moderate Risk.': return <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+                      case 'Low Risk.': return <CheckCircleIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+                      default: return <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
+                    }
+                  })()}
                   <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: '5px' }}>
                     {currentRisk?.level}
                   </Typography>
@@ -160,11 +194,35 @@ const Dashboard: React.FC = () => {
 
                 {/* Weather icons section */}
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: '10px' }}>
-                  {/* Droplet/rain icon */}
-                  <WaterDropIcon sx={{ fontSize: 50, color: '#3b82f6' }} />
-
-                  {/* Cloud with rain icon */}
-                  <CloudQueueIcon sx={{ fontSize: 50, color: '#6b7280' }} />
+                  {(() => {
+                    let iconComponent;
+                    let temperatureDisplay;
+                    switch (forecast?.outlook) {
+                      case 'Clear':
+                        iconComponent = <WbSunnyIcon sx={{ fontSize: 50, color: '#ffeb3b', '&:hover': { transform: 'scale(1.1)', transition: 'transform 0.3s ease-in-out' } }} />;
+                        temperatureDisplay = '25°C'; // Example temperature
+                        break;
+                      case 'Cloudy':
+                        iconComponent = <CloudIcon sx={{ fontSize: 50, color: '#6b7280', '&:hover': { transform: 'scale(1.1)', transition: 'transform 0.3s ease-in-out' } }} />;
+                        temperatureDisplay = '18°C'; // Example temperature
+                        break;
+                      case 'Thunderstorm':
+                        iconComponent = <ThunderstormIcon sx={{ fontSize: 50, color: '#4b5563', '&:hover': { transform: 'scale(1.1)', transition: 'transform 0.3s ease-in-out' } }} />;
+                        temperatureDisplay = '20°C'; // Example temperature
+                        break;
+                      default:
+                        iconComponent = <WaterDropIcon sx={{ fontSize: 50, color: '#3b82f6', '&:hover': { transform: 'scale(1.1)', transition: 'transform 0.3s ease-in-out' } }} />;
+                        temperatureDisplay = 'N/A';
+                    }
+                    return (
+                      <>
+                        {iconComponent}
+                        <Typography variant="body2" sx={{ textAlign: 'center', color: '#6b7280' }}>
+                          {temperatureDisplay}
+                        </Typography>
+                      </>
+                    );
+                  })()}
                 </Box>
                 <Typography variant="body2" sx={{ textAlign: 'center', color: '#6b7280' }}>
                   Flood Probability: {forecast?.floodProbability}

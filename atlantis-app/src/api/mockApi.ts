@@ -1,6 +1,14 @@
 // Simulate network delay
 const simulateDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+interface Alert {
+  id: string;
+  type: 'warning' | 'info' | 'success';
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
 // Mock GeoJSON data for risk zones
 export const mockRiskZones = {
   "type": "FeatureCollection",
@@ -52,4 +60,29 @@ export const fetchFloodRiskData = async () => {
       floodProbability: "High",
     },
   };
+};
+
+// Mock alerts data
+let mockAlerts: Alert[] = [
+  { id: '1', type: 'warning', message: 'High flood risk in Sector A.', timestamp: '2025-08-24T10:00:00Z', read: false },
+  { id: '2', type: 'info', message: 'New weather advisory issued.', timestamp: '2025-08-24T09:30:00Z', read: false },
+  { id: '3', type: 'success', message: 'Flood warning lifted for Sector C.', timestamp: '2025-08-23T18:00:00Z', read: true },
+  { id: '4', type: 'warning', message: 'River levels rising rapidly in North Zone.', timestamp: '2025-08-24T11:15:00Z', read: false },
+];
+
+export const fetchAlerts = async (): Promise<Alert[]> => {
+  await simulateDelay(300);
+  return mockAlerts;
+};
+
+export const markAlertAsRead = async (id: string): Promise<{ success: boolean }> => {
+  await simulateDelay(100);
+  mockAlerts = mockAlerts.map(alert => alert.id === id ? { ...alert, read: true } : alert);
+  return { success: true };
+};
+
+export const clearAllAlerts = async (): Promise<{ success: boolean }> => {
+  await simulateDelay(200);
+  mockAlerts = [];
+  return { success: true };
 };
