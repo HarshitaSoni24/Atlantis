@@ -86,3 +86,26 @@ export const clearAllAlerts = async (): Promise<{ success: boolean }> => {
   mockAlerts = [];
   return { success: true };
 };
+
+// Mock reports data
+const mockReportsData:ReportData[] = [
+  { date: '2025-01-15', riskLevel: 'Moderate', precipitation: 50 },
+  { date: '2025-02-20', riskLevel: 'Low', precipitation: 20 },
+  { date: '2025-03-10', riskLevel: 'High', precipitation: 80 },
+  { date: '2025-04-05', riskLevel: 'Moderate', precipitation: 40 },
+  { date: '2025-05-12', riskLevel: 'Low', precipitation: 15 },
+  { date: '2025-06-25', riskLevel: 'High', precipitation: 90 },
+  { date: '2025-07-01', riskLevel: 'Moderate', precipitation: 60 },
+  { date: '2025-08-18', riskLevel: 'Low', precipitation: 25 },
+];
+
+interface ReportData {
+  date: string;
+  riskLevel: 'High' | 'Moderate' | 'Low';
+  precipitation: number; // in mm
+}
+
+export const fetchReportsData = async (): Promise<ReportData[]> => {
+  await simulateDelay(400);
+  return mockReportsData;
+};

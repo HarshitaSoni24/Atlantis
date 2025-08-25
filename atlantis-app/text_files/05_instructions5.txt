@@ -257,21 +257,6 @@ Goal: Improve the visual presentation and information hierarchy of the Dashboard
 
 Stage 4: Page-Specific UI/UX Improvements
 
-Goal: Enhance the usability and visual appeal of individual application pages.
-
-4.1. Alerts Page
-*   Current State: Simple list, mark as read/clear all.
-*   Improvement: Add filtering, sorting, and clearer visual cues for alert status.
-*   Actionable Steps:
-    *   `atlantis-app/src/pages/Alerts.tsx`:
-        *   Filtering: Add `FormControl` with `Select` for filtering by alert type (Warning, Info, Success, All).
-        *   Sorting: Add buttons or a `Select` for sorting by date (Newest first, Oldest first).
-        *   Visual Cues:
-            *   Enhance the `backgroundColor` for read alerts to be more subtle (e.g., `theme.palette.background.paper` or a very light gray).
-            *   Use different icons for `warning`, `info`, and `success` alerts in the `ListItemText` primary section (e.g., `WarningIcon`, `InfoIcon`, `CheckCircleIcon`).
-        *   Bulk Actions: Add a "Mark All as Read" button.
-        *   Empty State: Replace "No new alerts." with a more engaging message and perhaps a relevant icon or illustration.
-
 4.2. My Locations Page
 *   Current State: Simple form and list.
 *   Improvement: Improve form layout and location display.
@@ -286,18 +271,6 @@ Goal: Enhance the usability and visual appeal of individual application pages.
             *   Edit/Delete buttons within the card.
         *   Confirmation Dialog: Implement a Material-UI `Dialog` for delete confirmation.
         *   Empty State: Enhance the "No locations saved yet." message.
-
-4.3. Reports Page
-*   Current State: Filters and a table.
-*   Improvement: Introduce data visualization (charts) and better export options.
-*   Actionable Steps:
-    *   `atlantis-app/src/pages/Reports.tsx`:
-        *   Filter Layout: Organize filters into a more visually appealing and intuitive layout, perhaps using `Grid` for two-column arrangement.
-        *   Data Visualization:
-            *   Integrate a charting library (e.g., `recharts` or `chart.js` with `react-chartjs-2`).
-            *   Display a bar chart showing risk levels over time, or a line chart for precipitation trends.
-            *   Conditionally render the chart or table based on a toggle (e.g., "View as Table" / "View as Chart").
-        *   Export Options: When "Download Report" is clicked, provide options for CSV or PDF.
 
 4.4. Settings Page
 *   Current State: Basic switches and text field. Uses `alert()`.

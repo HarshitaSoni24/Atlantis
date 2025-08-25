@@ -1,0 +1,198 @@
+### Core Application Files
+
+*   **`src/App.tsx`**:
+    *   **Purpose**: This is the main application component, serving as the root of the React application. It sets up the overall structure, routing, and theming.
+    *   **Functionality**:
+        *   **Routing**: Uses `react-router-dom` (`BrowserRouter`, `Routes`, `Route`) to define the application's navigation paths (`/`, `/alerts`, `/mylocations`, `/reports`, `/settings`) and render the corresponding page components.
+        *   **Theming**: Implements Material-UI's `ThemeProvider` with a `darkTheme` configuration, ensuring a consistent dark mode aesthetic across the application. It customizes palette colors, typography, and specific component styles (e.g., `MuiDrawer`, `MuiListItemButton`).
+        *   **Layout**: Manages the main layout with a `DashboardAppBar` (top navigation bar) and a `Sidebar` (side navigation drawer). It dynamically adjusts the main content area's margin based on the sidebar's open/closed state and screen size (`isMobile`).
+        *   **State Management**: Uses `useState` for managing UI-specific states like the open/closed state of profile menus and mobile menus.
+        *   **Sidebar Interaction**: Utilizes `useRef` to interact with the `Sidebar` component, allowing the `DashboardAppBar` to toggle the sidebar's visibility.
+        *   **Responsive Design**: Employs `useMediaQuery` to adapt the layout for mobile devices, including an overlay when the sidebar is open on small screens.
+
+*   **`src/App.css`**:
+    *   **Purpose**: Provides basic global CSS styling for the `App` component and the main dashboard container.
+    *   **Functionality**: Defines flexbox properties for the main app layout (`.App`) to ensure it takes full viewport height and enables a flexible arrangement of its children. It also styles the `.dashboard-container` for background, padding, and scroll behavior.
+
+*   **`src/index.tsx`**:
+    *   **Purpose**: The entry point of the React application. It renders the main `App` component into the DOM.
+    *   **Functionality**:
+        *   Uses `ReactDOM.createRoot` to initialize the React application.
+        *   Wraps the `App` component with `React.StrictMode` for development-time checks.
+        *   Integrates `AppProvider` from `AppContext.tsx` to make the global application state available to all components.
+        *   Calls `reportWebVitals` to measure and report performance metrics.
+
+*   **`src/index.css`**:
+    *   **Purpose**: Global CSS file that imports Leaflet's default styles and defines basic styles for the `body` and `code` elements.
+    *   **Functionality**: Ensures that the Leaflet map library's default styling is applied and sets up common font families and anti-aliasing for the entire application.
+
+*   **`src/logo.svg`**:
+    *   **Purpose**: An SVG image file, likely the application's logo or a placeholder.
+    *   **Functionality**: Contains vector graphics data for a simple cube-like shape, which is used as an icon in the `DashboardAppBar`.
+
+### API Mocking
+
+*   **`src/api/mockApi.ts`**:
+    *   **Purpose**: Provides mock API functions to simulate backend data fetching and manipulation for various parts of the application (risk zones, flood risk data, alerts, reports). This is crucial for development and testing without a real backend.
+    *   **Functionality**:
+        *   `simulateDelay`: A utility function to mimic network latency.
+        *   `mockRiskZones`: Static GeoJSON data representing flood risk zones.
+        *   `fetchRiskZones`: Asynchronously returns `mockRiskZones` after a simulated delay.
+        *   `fetchFloodRiskData`: Asynchronously returns mock current flood risk and forecast data.
+        *   `mockAlerts`: An array of mock alert objects, including `id`, `type`, `message`, `timestamp`, and `read` status.
+        *   `fetchAlerts`: Asynchronously returns the current `mockAlerts` array.
+        *   `markAlertAsRead`: Updates the `read` status of a specific alert in `mockAlerts`.
+        *   `clearAllAlerts`: Clears all alerts from `mockAlerts`.
+        *   `mockReportsData`: An array of mock report data, including `date`, `riskLevel`, and `precipitation`.
+        *   `fetchReportsData`: Asynchronously returns `mockReportsData`.
+
+### Components
+
+*   **`src/components/DashboardAppBar.tsx`**:
+    *   **Purpose**: Represents the top application bar (header) for the dashboard, providing navigation, search, notifications, and user profile access.
+    *   **Functionality**:
+        *   **Material-UI `AppBar`**: Styled using `styled` to handle transitions and positioning based on the sidebar's open state.
+        *   **Navigation**: Includes a `MenuIcon` to toggle the sidebar, a title, and an application icon.
+        *   **Search Bar**: Integrates the `Search` and `StyledInputBase` components from `common/SearchBar.tsx` for a search functionality.
+        *   **User Actions**: Displays icons for mail, notifications (with badges), and a user avatar.
+        *   **User Menu**: Manages state for and renders a profile menu (`Menu`, `MenuItem`) for desktop and mobile views.
+        *   **Context Integration**: Uses `useAppContext` to retrieve the `userProfile` (specifically `avatarSrc`) for the user avatar.
+        *   **Props**: Accepts `title`, `iconComponent`, `sidebarRef` (to control the sidebar), and `handleDrawerToggle` (callback for menu icon click).
+
+*   **`src/components/DashboardHeader.tsx`**:
+    *   **Purpose**: A separate header component, seemingly an alternative or an older version of a dashboard header, providing a search bar, notifications, and user avatar.
+    *   **Functionality**:
+        *   Uses Material-UI `AppBar`, `Toolbar`, `InputBase`, `Box`, `Typography`, `IconButton`, `Badge`, and `Avatar`.
+        *   Includes a search bar (`Search`, `SearchIconWrapper`, `StyledInputBase`) with a "Search location" placeholder.
+        *   Displays a notification badge and a user avatar.
+        *   **Note**: This component appears to be a standalone header and is not currently integrated into the main `App.tsx` or `DashboardAppBar.tsx` based on the provided code snippets. It might be a leftover or intended for a different layout.
+
+*   **`src/components/FloodRiskMap.tsx`**:
+    *   **Purpose**: Displays an interactive map showing flood risk zones using Leaflet and React-Leaflet.
+    *   **Functionality**:
+        *   **Map Initialization**: Uses `MapContainer` to create the map, centered at a default coordinate with a specified zoom level.
+        *   **Tile Layer**: Adds an OpenStreetMap tile layer for the base map.
+        *   **GeoJSON Overlay**: Renders GeoJSON data (`riskZones`) on the map using the `GeoJSON` component.
+        *   **Styling**: `getRiskStyle` function dynamically applies colors and opacities to GeoJSON features based on their `risk` property (High, Moderate, Low), using colors defined in `constants/colors.ts`.
+        *   **Props**: Accepts `riskZones` (GeoJSON data) as a prop.
+
+*   **`src/components/RiskLegend.tsx`**:
+    *   **Purpose**: Displays a legend for the flood risk map, explaining the color coding of different risk levels.
+    *   **Functionality**:
+        *   Renders a `Paper` component containing the legend.
+        *   Iterates through `riskLevels` prop to display each risk level with its corresponding color swatch and label.
+        *   **Responsive Positioning**: Uses `useTheme` and `useMediaQuery` to adjust its position on the screen (bottom-left corner) for small screens.
+        *   **Props**: Accepts `riskLevels` (an array of objects with `label` and `color`) as a prop.
+
+*   **`src/components/Sidebar.tsx`**:
+    *   **Purpose**: Implements the main navigation sidebar of the application, allowing users to switch between different sections.
+    *   **Functionality**:
+        *   **Material-UI `Drawer`**: Styled using `styled` to create a permanent, collapsible sidebar.
+        *   **Navigation Links**: Uses `NavLink` from `react-router-dom` to create navigation items (`Dashboard`, `My Locations`, `Alerts`, `Reports`, `Settings`). These links are styled to indicate the active route.
+        *   **Collapsible State**: Manages its internal `open` state and exposes `toggleSidebar` and `isOpen` via `useImperativeHandle` and `forwardRef`, allowing parent components (like `App.tsx`) to control its visibility.
+        *   **Header**: Includes a user avatar, a placeholder for "User Name", and a notification badge in its header.
+        *   **Styling**: Applies custom styles for background, text color, and hover/active states for list items, using colors from `constants/colors.ts`.
+
+*   **`src/components/common/SearchBar.tsx`**:
+    *   **Purpose**: Provides reusable styled components for a search bar, including the container, icon wrapper, and input field.
+    *   **Functionality**:
+        *   `Search`: A styled `div` that acts as the main container for the search input, handling background, border-radius, and responsive width.
+        *   `SearchIconWrapper`: A styled `div` to position the search icon within the input field.
+        *   `StyledInputBase`: A styled `InputBase` component for the actual text input, handling padding, transitions, and responsive width.
+        *   **Reusability**: Designed to be imported and used in other components that require a search input (e.g., `DashboardAppBar`, `DashboardHeader`).
+
+### Constants
+
+*   **`src/constants/colors.ts`**:
+    *   **Purpose**: Defines a centralized set of color variables used throughout the application, promoting consistency and easy theme management.
+    *   **Functionality**: Exports various color constants for:
+        *   Material-UI palette (primary, secondary, error, warning, info, success).
+        *   Text colors (primary, secondary).
+        *   Background colors (default, paper).
+        *   Sidebar specific colors (background, text, active, hover).
+        *   Flood risk specific colors (mouth, low, moderate, light, high).
+
+### Context
+
+*   **`src/context/AppContext.tsx`**:
+    *   **Purpose**: Implements a global React Context for managing application-wide state, such as flood risk zones, user profile information, and notifications.
+    *   **Functionality**:
+        *   **`AppState` Interface**: Defines the structure of the global state, including `riskZones`, `notificationCount`, `userProfile` (with `avatarSrc` and `locations`), and `error`.
+        *   **`AppAction` Type**: Defines the types of actions that can be dispatched to modify the state (e.g., `SET_RISK_ZONES`, `ADD_LOCATION`).
+        *   **`initialState`**: Sets the initial values for the application state.
+        *   **`appReducer`**: A reducer function that handles state transitions based on dispatched actions. It includes logic for adding, updating, and deleting user locations.
+        *   **`AppContext`**: The React Context object itself.
+        *   **`AppProvider`**: A React component that wraps its children and provides the `state` and `dispatch` function to its descendants. It also fetches initial `riskZones` data on mount using `useEffect` and handles potential errors.
+        *   **`useAppContext` Hook**: A custom hook to easily consume the context in any functional component, ensuring it's used within an `AppProvider`.
+
+### Pages
+
+*   **`src/pages/Alerts.tsx`**:
+    *   **Purpose**: Displays a list of alerts related to flood risks and other advisories.
+    *   **Functionality**:
+        *   **State Management**: Manages local state for `alerts`, `filterType` (all, warning, info, success), and `sortBy` (newest, oldest).
+        *   **Data Fetching**: Uses `useEffect` to fetch alerts data from `mockApi.ts` on component mount.
+        *   **Filtering and Sorting**: Implements logic to filter alerts by type and sort them by timestamp.
+        *   **Actions**: Provides buttons to mark individual alerts as read and to clear all alerts, interacting with `mockApi.ts`.
+        *   **UI**: Renders alerts in a `List` with `ListItem` and `Paper` components, displaying icons based on alert type and visually indicating read/unread status. Includes a message for when no alerts are present.
+
+*   **`src/pages/Dashboard.tsx`**:
+    *   **Purpose**: The main dashboard page, providing an overview of current flood risk, a map, and a forecast.
+    *   **Functionality**:
+        *   **Data Fetching**: Fetches `currentRisk` and `forecast` data from `mockApi.ts` using `useEffect`.
+        *   **Map Integration**: Renders the `FloodRiskMap` component, passing it the `riskZones` data from `AppContext`.
+        *   **Risk Legend**: Displays the `RiskLegend` component to explain map colors.
+        *   **Current Risk Display**: Shows the current flood risk level for a specific location in a visually distinct box, with dynamic background colors and icons based on the risk level.
+        *   **Forecast Display**: Presents a weather forecast with an outlook, flood probability, and dynamic weather icons (e.g., sun, clouds, thunderstorm, water drop).
+        *   **Loading Indicators**: Shows `CircularProgress` while data is being loaded.
+        *   **UI Layout**: Uses Material-UI `Box` and `Grid` for a responsive two-column layout, separating the map from risk status and forecast.
+
+*   **`src/pages/MyLocations.tsx`**:
+    *   **Purpose**: Allows users to add, edit, and delete their saved locations.
+    *   **Functionality**:
+        *   **State Management**: Uses `useState` for input fields (`locationName`, `locationAddress`), `editingLocationId`, and dialog visibility for deletion confirmation.
+        *   **Context Integration**: Interacts with `AppContext` to dispatch `ADD_LOCATION`, `UPDATE_LOCATION`, and `DELETE_LOCATION` actions, managing user-defined locations in the global state.
+        *   **Form**: Provides `TextField` components for entering location name and address.
+        *   **Actions**: Buttons for "Add Location" (or "Update Location" when editing) and "Cancel Edit".
+        *   **Location List**: Displays saved locations using Material-UI `Grid` and `Card` components, each with edit and delete buttons.
+        *   **Confirmation Dialog**: Implements a `Dialog` for confirming location deletion.
+        *   **Empty State**: Shows a message and icon when no locations are saved.
+
+*   **`src/pages/Reports.tsx`**:
+    *   **Purpose**: Displays flood risk reports, allowing users to filter by month/year and view data in either a table or a chart format.
+    *   **Functionality**:
+        *   **State Management**: Manages local state for `reportsData`, `filterMonth`, `filterYear`, and `viewMode` (table or chart).
+        *   **Data Fetching**: Fetches reports data from `mockApi.ts` on component mount.
+        *   **Filtering**: Provides `FormControl`, `InputLabel`, `Select`, and `MenuItem` components for filtering reports by month and year.
+        *   **View Toggle**: Uses `ToggleButtonGroup` to switch between table and chart views.
+        *   **Download Options**: Includes placeholder buttons for downloading reports as CSV or PDF.
+        *   **Table View**: Renders filtered data in a Material-UI `Table` with `TableHead`, `TableBody`, `TableRow`, and `TableCell`.
+        *   **Chart View**: Uses `recharts` library (`BarChart`, `XAxis`, `YAxis`, `CartesianGrid`, `Tooltip`, `Legend`, `ResponsiveContainer`) to visualize precipitation data.
+        *   **Empty State**: Displays a message when no reports match the selected filters.
+
+*   **`src/pages/Settings.tsx`**:
+    *   **Purpose**: Allows users to configure application settings, specifically updating their avatar URL.
+    *   **Functionality**:
+        *   **State Management**: Manages local state for `avatarSrc`, `openSnackbar`, and `snackbarMessage`.
+        *   **Context Integration**: Uses `useAppContext` to get and dispatch `SET_AVATAR_SRC` action to update the user's avatar in the global state.
+        *   **Input Field**: Provides a `TextField` for entering the avatar URL.
+        *   **Avatar Preview**: Displays a live preview of the avatar based on the entered URL.
+        *   **Save Functionality**: A "Save Settings" button triggers the state update and shows a success `Snackbar`.
+
+### Testing/Utility
+
+*   **`src/App.test.tsx`**:
+    *   **Purpose**: Contains unit tests for the `App` component.
+    *   **Functionality**: Uses `@testing-library/react` to render the `App` component and `expect` assertions from `jest-dom` to verify that specific text content is present in the rendered output.
+
+*   **`src/reportWebVitals.ts`**:
+    *   **Purpose**: A utility file for measuring and reporting web performance metrics (Web Vitals).
+    *   **Functionality**: Imports functions from the `web-vitals` library (`getCLS`, `getFID`, `getFCP`, `getLCP`, `getTTFB`) and calls them to collect performance data, which can then be sent to an analytics endpoint.
+
+*   **`src/setupTests.ts`**:
+    *   **Purpose**: Configuration file for Jest, typically used to import additional matchers or set up global test environment.
+    *   **Functionality**: Imports `@testing-library/jest-dom`, which extends Jest's `expect` assertions with custom DOM matchers, making it easier to write tests that assert on the state of the DOM.
+
+*   **`src/react-app-env.d.ts`**:
+    *   **Purpose**: A TypeScript declaration file that includes references to types provided by `react-scripts`.
+    *   **Functionality**: Ensures that TypeScript understands the environment variables and other types automatically generated or provided by Create React App.

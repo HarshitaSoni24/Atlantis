@@ -128,6 +128,11 @@ const Alerts: React.FC = () => {
                 backgroundColor: alert.read ? theme.palette.action.hover : theme.palette.background.paper,
                 display: 'flex',
                 alignItems: 'center',
+                borderLeft: `5px solid ${
+                  alert.type === 'warning' ? theme.palette.warning.main :
+                  alert.type === 'info' ? theme.palette.info.main :
+                  theme.palette.success.main
+                }`,
               }}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>
