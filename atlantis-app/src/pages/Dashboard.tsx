@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import DashboardHeader from '../components/DashboardHeader';
 import FloodRiskMap from '../components/FloodRiskMap';
 import RiskLegend from '../components/RiskLegend';
 import { Typography, Box, Button, CircularProgress } from '@mui/material';
@@ -43,11 +42,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      <DashboardHeader
-        title="FLOOD PREDICTION"
-        showCubeIcon={true}
-        avatarSrc={userProfile.avatarSrc}
-      />
       {/* Main content grid layout */}
       <Box
         sx={{

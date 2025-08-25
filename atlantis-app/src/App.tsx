@@ -92,18 +92,60 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+import {
+  PRIMARY_MAIN, SECONDARY_MAIN, BACKGROUND_DEFAULT, BACKGROUND_PAPER,
+  SIDEBAR_BACKGROUND, SIDEBAR_TEXT, SIDEBAR_ACTIVE_BACKGROUND, SIDEBAR_HOVER_BACKGROUND,
+  TEXT_PRIMARY, TEXT_SECONDARY, ERROR_MAIN, WARNING_MAIN, INFO_MAIN, SUCCESS_MAIN
+} from './constants/colors';
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-    secondary: {
-      main: '#f48fb1',
+    primary: { main: PRIMARY_MAIN },
+    secondary: { main: SECONDARY_MAIN },
+    error: { main: ERROR_MAIN },
+    warning: { main: WARNING_MAIN },
+    info: { main: INFO_MAIN },
+    success: { main: SUCCESS_MAIN },
+    text: {
+      primary: TEXT_PRIMARY,
+      secondary: TEXT_SECONDARY,
     },
     background: {
-      default: '#121212',
-      paper: '#1d1d1d',
+      default: BACKGROUND_DEFAULT,
+      paper: BACKGROUND_PAPER,
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif', // Or a chosen font
+    h4: { fontWeight: 600 },
+    h6: { fontWeight: 500 },
+    subtitle1: { fontWeight: 500 },
+    body1: { fontSize: '1rem' },
+    body2: { fontSize: '0.875rem' },
+  },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: SIDEBAR_BACKGROUND,
+          color: SIDEBAR_TEXT,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': { // For active state
+            backgroundColor: SIDEBAR_ACTIVE_BACKGROUND,
+            borderLeft: `4px solid ${PRIMARY_MAIN}`,
+            paddingLeft: `calc(24px - 4px)`, // Replaced theme.spacing(3) with 24px (default spacing unit * 3) for direct replacement
+          },
+          '&:hover': {
+            backgroundColor: SIDEBAR_HOVER_BACKGROUND,
+          },
+        },
+      },
     },
   },
 });
