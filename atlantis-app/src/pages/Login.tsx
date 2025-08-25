@@ -39,26 +39,20 @@ const Login: React.FC = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
         minHeight: '100vh',
-        backgroundColor: '#F0F2F5', // Light background color
+        backgroundImage: `url('/ChatGPT%20Image%20Aug%2026,%202025,%2001_33_22%20AM.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        pr: '7%', // shift away from edge
       }}
     >
-      {/* Left Section - Illustration */}
+      {/* Login Form */}
       <Box
         sx={{
-          flex: 1,
-          backgroundImage: `url('/references/Login アセット.jpeg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          display: { xs: 'none', md: 'block' }, // Hide on small screens
-        }}
-      />
-
-      {/* Right Section - Login Form */}
-      <Box
-        sx={{
-          flex: 1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
