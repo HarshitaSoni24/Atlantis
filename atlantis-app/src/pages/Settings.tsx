@@ -10,11 +10,32 @@ const Settings: React.FC = () => {
   const [avatarSrc, setAvatarSrc] = useState(state.userProfile.avatarSrc || '');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [avatarSrcError, setAvatarSrcError] = useState(false);
+  const [avatarSrcHelperText, setAvatarSrcHelperText] = useState('');
 
   const handleSave = () => {
+    if (!avatarSrc.trim()) {
+      setAvatarSrcError(true);
+      setAvatarSrcHelperText('Avatar URL cannot be empty.');
+      setSnackbarMessage('Avatar URL cannot be empty.');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Basic URL format validation
+    if (!avatarSrc.startsWith('http://') && !avatarSrc.startsWith('https://')) {
+      setAvatarSrcError(true);
+      setAvatarSrcHelperText('Please enter a valid URL (must start with http:// or https://).');
+      setSnackbarMessage('Please enter a valid URL.');
+      setOpenSnackbar(true);
+      return;
+    }
+
     dispatch({ type: 'SET_AVATAR_SRC', payload: avatarSrc });
     setSnackbarMessage('Settings saved successfully!');
     setOpenSnackbar(true);
+    setAvatarSrcError(false); // Clear error on successful save
+    setAvatarSrcHelperText('');
   };
 
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -34,9 +55,15 @@ const Settings: React.FC = () => {
           label="Avatar URL"
           variant="outlined"
           value={avatarSrc}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatarSrc(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setAvatarSrc(e.target.value);
+            setAvatarSrcError(false); // Clear error on change
+            setAvatarSrcHelperText('');
+          }}
           fullWidth
           sx={{ mb: 2, maxWidth: 400 }}
+          error={avatarSrcError}
+          helperText={avatarSrcHelperText}
         />
         {avatarSrc && (
           <Box sx={{ mt: 1, mb: 2 }}>
@@ -50,7 +77,7 @@ const Settings: React.FC = () => {
       </Box>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={avatarSrcError ? "error" : "success"} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

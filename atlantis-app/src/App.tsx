@@ -25,7 +25,8 @@ import Settings from './pages/Settings';
 import {
   PRIMARY_MAIN, SECONDARY_MAIN, BACKGROUND_DEFAULT, BACKGROUND_PAPER,
   SIDEBAR_BACKGROUND, SIDEBAR_TEXT, SIDEBAR_ACTIVE_BACKGROUND, SIDEBAR_HOVER_BACKGROUND,
-  TEXT_PRIMARY, TEXT_SECONDARY, ERROR_MAIN, WARNING_MAIN, INFO_MAIN, SUCCESS_MAIN
+  TEXT_PRIMARY, TEXT_SECONDARY, ERROR_MAIN, WARNING_MAIN, INFO_MAIN, SUCCESS_MAIN,
+  MOUTH_RISK_COLOR, LOW_RISK_COLOR, MODERATE_RISK_COLOR, LIGHT_RISK_COLOR, HIGH_RISK_COLOR
 } from './constants/colors';
 
 const drawerWidth = 240;
@@ -46,6 +47,20 @@ const darkTheme = createTheme({
     background: {
       default: BACKGROUND_DEFAULT,
       paper: BACKGROUND_PAPER,
+    },
+    // Custom risk colors
+    custom: {
+      risk: {
+        mouth: MOUTH_RISK_COLOR,
+        low: LOW_RISK_COLOR,
+        moderate: MODERATE_RISK_COLOR,
+        light: LIGHT_RISK_COLOR,
+        high: HIGH_RISK_COLOR,
+      },
+      sidebar: {
+        activeBackground: SIDEBAR_ACTIVE_BACKGROUND,
+        hoverBackground: SIDEBAR_HOVER_BACKGROUND,
+      },
     },
   },
   typography: {

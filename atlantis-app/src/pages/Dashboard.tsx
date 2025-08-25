@@ -9,16 +9,16 @@ import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CloudIcon from '@mui/icons-material/Cloud';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
-import { MOUTH_RISK_COLOR, LOW_RISK_COLOR, MODERATE_RISK_COLOR, LIGHT_RISK_COLOR, HIGH_RISK_COLOR } from '../constants/colors';
 import { useAppContext } from '../context/AppContext';
 import { fetchFloodRiskData } from '../api/mockApi';
 import InfoIcon from '@mui/icons-material/Info'; // Import InfoIcon
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Import CheckCircleIcon
-import { alpha } from '@mui/material/styles'; // Import alpha for color manipulation
+import { alpha, useTheme } from '@mui/material/styles'; // Import alpha and useTheme for color manipulation
 
 const Dashboard: React.FC = () => {
   const { state } = useAppContext();
   const { riskZones, userProfile } = state;
+  const theme = useTheme(); // Use the theme hook
 
   const [currentRisk, setCurrentRisk] = useState<any | null>(null);
   const [forecast, setForecast] = useState<any | null>(null);
@@ -38,29 +38,29 @@ const Dashboard: React.FC = () => {
     getFloodRiskData();
   }, []);
 
-  const riskLevels = [
-    { label: 'Mouth', color: MOUTH_RISK_COLOR },
-    { label: 'Low', color: LOW_RISK_COLOR },
-    { label: 'Moderate', color: MODERATE_RISK_COLOR },
-    { label: 'Light', color: LIGHT_RISK_COLOR },
-    { label: 'High', color: HIGH_RISK_COLOR },
-  ];
+  const riskLevels: { label: string; key: "light" | "high" | "low" | "mouth" | "moderate" }[] = [
+  { label: "Low", key: "low" },
+  { label: "Moderate", key: "moderate" },
+  { label: "High", key: "high" },
+  { label: "Mouth", key: "mouth" },
+  { label: "Light", key: "light" },
+];
 
   const getRiskBoxStyle = (riskLevel: string) => {
     let bgColor;
     let icon;
     switch (riskLevel) {
       case 'High Risk.':
-        bgColor = HIGH_RISK_COLOR;
+        bgColor = theme.palette.custom.risk.high;
         icon = <WarningAmberIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
         break;
       case 'Moderate Risk.':
-        bgColor = MODERATE_RISK_COLOR;
-        icon = <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />; // Example: InfoIcon for moderate
+        bgColor = theme.palette.custom.risk.moderate;
+        icon = <InfoIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
         break;
       case 'Low Risk.':
-        bgColor = LOW_RISK_COLOR;
-        icon = <CheckCircleIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />; // Example: CheckCircleIcon for low
+        bgColor = theme.palette.custom.risk.low;
+        icon = <CheckCircleIcon sx={{ fontSize: 60, color: 'white', marginBottom: '10px' }} />;
         break;
       default:
         bgColor = '#6b7280'; // Default neutral color

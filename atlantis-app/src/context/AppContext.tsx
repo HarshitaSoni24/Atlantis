@@ -1,11 +1,20 @@
 import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
 import { fetchRiskZones } from '../api/mockApi';
 
+import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
+import { fetchRiskZones } from '../api/mockApi';
+
 // Define the shape of your state
 interface Location {
   id: string;
   name: string;
   address: string;
+}
+
+interface SearchedLocation {
+  lat: number;
+  lng: number;
+  name: string;
 }
 
 interface UserProfile {
@@ -18,6 +27,7 @@ interface AppState {
   notificationCount: number;
   userProfile: UserProfile; // Use the new UserProfile interface
   error: string | null; // New: for global error messages
+  searchedLocation: SearchedLocation | null; // New: for map search
 }
 
 // Define the types of actions that can be dispatched
@@ -28,7 +38,8 @@ type AppAction =
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'ADD_LOCATION'; payload: Location } // New: Add location
   | { type: 'UPDATE_LOCATION'; payload: Location } // New: Update location
-  | { type: 'DELETE_LOCATION'; payload: string }; // New: Delete location
+  | { type: 'DELETE_LOCATION'; payload: string } // New: Delete location
+  | { type: 'SET_SEARCHED_LOCATION'; payload: SearchedLocation | null }; // New: Set searched location
 
 const initialState: AppState = {
   riskZones: null, // Initialize as null, will be fetched
@@ -38,6 +49,7 @@ const initialState: AppState = {
     locations: [], // Initialize locations as an empty array
   },
   error: null, // New: no error initially
+  searchedLocation: null, // Initialize searchedLocation
 };
 
 // Reducer function
@@ -77,6 +89,8 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
           locations: state.userProfile.locations.filter((loc) => loc.id !== action.payload),
         },
       };
+    case 'SET_SEARCHED_LOCATION':
+      return { ...state, searchedLocation: action.payload };
     default:
       return state;
   }

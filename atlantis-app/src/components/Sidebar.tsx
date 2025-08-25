@@ -3,7 +3,7 @@ import { NavLink as RouterLink, NavLinkProps } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Badge, Box, ListItemButtonProps } from '@mui/material';
 import { Dashboard, LocationOn, Notifications, Assessment, Settings as SettingsIcon } from '@mui/icons-material';
 import { styled, useTheme } from '@mui/material/styles';
-import { SIDEBAR_ACTIVE_BACKGROUND, SIDEBAR_HOVER_BACKGROUND } from '../constants/colors';
+// Removed direct import of SIDEBAR_ACTIVE_BACKGROUND, SIDEBAR_HOVER_BACKGROUND
 
 const NavLinkComponent = React.forwardRef<HTMLAnchorElement, NavLinkProps>((props, ref) => (
   <RouterLink ref={ref} {...props} />
@@ -46,12 +46,12 @@ type StyledListItemProps = ListItemButtonProps & NavLinkProps;
 const StyledListItem = styled(ListItemButton)<StyledListItemProps>(({ theme }) => ({
   padding: theme.spacing(1.5, 3),
   '&.active': {
-    backgroundColor: SIDEBAR_ACTIVE_BACKGROUND,
+    backgroundColor: theme.palette.custom.sidebar.activeBackground, // Use theme color
     borderLeft: `4px solid ${theme.palette.primary.main}`,
     paddingLeft: `calc(${theme.spacing(3)} - 4px)`,
   },
   '&:hover': {
-    backgroundColor: SIDEBAR_HOVER_BACKGROUND,
+    backgroundColor: theme.palette.custom.sidebar.hoverBackground, // Use theme color
     transform: 'translateX(5px)',
     transition: 'transform 0.3s ease-in-out',
   },
@@ -59,7 +59,7 @@ const StyledListItem = styled(ListItemButton)<StyledListItemProps>(({ theme }) =
 
 const navItems = [
   { text: 'Dashboard', icon: <Dashboard />, path: '/' },
-  { text: 'My Locations', icon: <LocationOn />, path: '/locations' },
+  { text: 'My Locations', icon: <LocationOn />, path: '/mylocations' }, // Corrected path
   { text: 'Alerts', icon: <Notifications />, path: '/alerts' },
   { text: 'Reports', icon: <Assessment />, path: '/reports' },
   { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
@@ -84,14 +84,14 @@ const Sidebar = forwardRef<SidebarRef, {}>(({}, ref) => {
   }));
 
   return (
-    <StyledDrawer variant="permanent" anchor="left" isCollapsed={!open}>
+    <StyledDrawer variant="permanent" anchor="left" isCollapsed={!open} role="navigation"> {/* Added role="navigation" */}
       <SidebarHeader>
         <Avatar sx={(theme) => ({ mr: 2, bgcolor: theme.palette.secondary.main })}>U</Avatar>
         <Typography variant="h6" component="div" sx={(theme) => ({ flexGrow: 1, color: theme.palette.text.primary })}>
           User Name
         </Typography>
         <Badge badgeContent={4} color="error">
-          <Notifications />
+          <Notifications aria-label="4 new notifications" /> {/* Added aria-label */}
         </Badge>
       </SidebarHeader>
       <Box sx={{ overflow: 'auto' }}>

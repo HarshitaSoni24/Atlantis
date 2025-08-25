@@ -28,11 +28,28 @@ const MyLocations: React.FC = () => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
 
+  // State for validation errors
+  const [locationNameError, setLocationNameError] = useState(false);
+  const [locationAddressError, setLocationAddressError] = useState(false);
+
   const handleAddOrUpdateLocation = () => {
-    if (!locationName || !locationAddress) {
-        // Optional: Add some basic validation to prevent empty submissions
-        alert("Please fill out both Location Name and Address.");
-        return;
+    let hasError = false;
+    if (!locationName.trim()) {
+      setLocationNameError(true);
+      hasError = true;
+    } else {
+      setLocationNameError(false);
+    }
+
+    if (!locationAddress.trim()) {
+      setLocationAddressError(true);
+      hasError = true;
+    } else {
+      setLocationAddressError(false);
+    }
+
+    if (hasError) {
+      return;
     }
 
     if (editingLocationId) {
@@ -63,6 +80,9 @@ const MyLocations: React.FC = () => {
     setLocationName(location.name);
     setLocationAddress(location.address);
     setEditingLocationId(location.id);
+    // Clear errors when starting edit
+    setLocationNameError(false);
+    setLocationAddressError(false);
   };
 
   const handleDeleteClick = (id: string) => {
@@ -100,8 +120,13 @@ const MyLocations: React.FC = () => {
               variant="outlined"
               fullWidth
               value={locationName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocationName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setLocationName(e.target.value);
+                setLocationNameError(false); // Clear error on change
+              }}
               sx={{ mb: 2 }}
+              error={locationNameError}
+              helperText={locationNameError ? "Location Name cannot be empty" : ""}
             />
           </Grid>
           {/* FIX: Added 'item' prop for responsive layout to work */}
@@ -112,8 +137,13 @@ const MyLocations: React.FC = () => {
               variant="outlined"
               fullWidth
               value={locationAddress}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocationAddress(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setLocationAddress(e.target.value);
+                setLocationAddressError(false); // Clear error on change
+              }}
               sx={{ mb: 2 }}
+              error={locationAddressError}
+              helperText={locationAddressError ? "Address cannot be empty" : ""}
             />
           </Grid>
         </Grid>
@@ -131,6 +161,8 @@ const MyLocations: React.FC = () => {
               setEditingLocationId(null);
               setLocationName('');
               setLocationAddress('');
+              setLocationNameError(false); // Clear errors on cancel
+              setLocationAddressError(false); // Clear errors on cancel
             }}
             sx={{ ml: 2 }}
           >
